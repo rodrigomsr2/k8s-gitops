@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexus-argocd
+  namespace: nexus
+  labels:
+    app: nexus-argocd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nexus-argocd
+  template:
+    metadata:
+      labels:
+        app: nexus-argocd
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8081"
+        prometheus.io/path: "/actuator/prometheus"
+    spec:
+      containers:
+        - name: nexus-argocd
+          image: ghcr.io/rodrigomsr2/nexus-argocd:sha-f5efadb
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: actuator
+              containerPort: 8081
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8081
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8081
+            initialDelaySeconds: 30
+            periodSeconds: 15

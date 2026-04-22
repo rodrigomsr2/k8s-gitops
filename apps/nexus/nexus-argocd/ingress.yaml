@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nexus-argocd
+  namespace: nexus
+  labels:
+    app: nexus-argocd
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: nexus.homelab.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nexus-argocd
+                port:
+                  name: http
