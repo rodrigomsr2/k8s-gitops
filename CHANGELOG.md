@@ -9,6 +9,12 @@ Versionamento segue [Semantic Versioning](https://semver.org/lang/pt-BR/) — ve
 
 ## [Unreleased]
 
+### Added
+- Apps GitOps para observabilidade no namespace `monitoring`:
+  - `monitoring-stack`: Namespace, RBAC, Prometheus, Grafana, Ingress e Node Exporter
+  - `loki`: wrapper chart com dependência para `grafana/loki`
+  - `promtail`: wrapper chart com dependência para `grafana/promtail`
+
 ---
 
 ## [1.0.0] — 2026-04-22

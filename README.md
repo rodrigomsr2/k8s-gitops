@@ -7,6 +7,9 @@ GitOps repository for the k8s-homelab environment. Centralizes Kubernetes manife
 | Aplicação | Namespace | Diretório | Imagem |
 |-----------|-----------|-----------|--------|
 | `nexus-argocd` | `nexus` | `apps/nexus/nexus-argocd/` | `ghcr.io/rodrigomsr2/nexus-argocd` |
+| `monitoring-stack` | `monitoring` | `apps/monitoring/monitoring-stack/` | Prometheus, Grafana, Node Exporter |
+| `loki` | `monitoring` | `apps/monitoring/loki/` | Helm wrapper chart com dependência `grafana/loki` |
+| `promtail` | `monitoring` | `apps/monitoring/promtail/` | Helm wrapper chart com dependência `grafana/promtail` |
 
 ## Estrutura do repositório
 
@@ -20,12 +23,14 @@ k8s-gitops/
 │       ├── semver.md
 │       └── project-organization.md
 ├── apps/
-│   └── nexus/                     # Namespace nexus — serviços do monorepo nexus
+│   ├── argocd/
+│   │   └── argocd-config/         # Ingress e ApplicationSet auto-managed
+│   ├── monitoring/
+│   │   ├── monitoring-stack/      # Prometheus, Grafana, Node Exporter
+│   │   ├── loki/                  # Helm wrapper chart para grafana/loki
+│   │   └── promtail/              # Helm wrapper chart para grafana/promtail
+│   └── nexus/
 │       └── nexus-argocd/          # Serviço nexus-argocd
-│           ├── namespace.yaml
-│           ├── deployment.yaml
-│           ├── service.yaml
-│           └── ingress.yaml
 └── docs/
     └── adr/
         └── ADR-001-gitops-repository.md
@@ -52,10 +57,17 @@ ArgoCD detecta o commit e reconcilia o cluster
 
 ## Adicionando uma nova aplicação
 
-1. Criar o diretório `apps/<nome-da-aplicacao>/`
-2. Adicionar os manifests Kubernetes (Deployment, Service, Ingress)
-3. Registrar a nova `Application` no ArgoCD (via `k8s-homelab`)
+1. Criar o diretório `apps/<namespace>/<nome-da-aplicacao>/`
+2. Adicionar os manifests Kubernetes
+3. Fazer commit e push na branch `main`
 4. Atualizar este README e o CHANGELOG
+
+O ApplicationSet `homelab` cria uma Application automaticamente para cada
+diretório que segue o padrão `apps/*/*`.
+
+Para apps baseadas em charts de terceiros, usar um wrapper chart com
+`Chart.yaml`, `Chart.lock` e `values.yaml`. O diretório `charts/` gerado por
+`helm dependency build` é local e fica ignorado.
 
 ## Documentação
 
