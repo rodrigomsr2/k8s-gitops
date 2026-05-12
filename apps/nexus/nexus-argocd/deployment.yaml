@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: nexus-argocd
-          image: ghcr.io/rodrigomsr2/nexus-argocd:sha-sha-5c732ad
+          image: ghcr.io/rodrigomsr2/nexus-argocd:sha-94d9b88
           ports:
             - name: http
               containerPort: 8080
